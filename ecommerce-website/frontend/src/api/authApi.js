@@ -1,8 +1,4 @@
-import axios from "axios";
-
-const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-});
+import api from "./axios";
 
 /* =========================
    REGISTER
@@ -12,7 +8,7 @@ export const registerUser = async (payload) => {
 
   try {
 
-    const { data } = await API.post(
+    const { data } = await api.post(
       "/auth/register",
       payload
     );
@@ -40,7 +36,7 @@ export const loginUser = async (credentials) => {
 
   try {
 
-    const { data } = await API.post(
+    const { data } = await api.post(
       "/auth/login",
       credentials
     );
@@ -68,7 +64,7 @@ export const verifyOtp = async (payload) => {
 
   try {
 
-    const { data } = await API.post(
+    const { data } = await api.post(
       "/auth/verify-phone",
       payload
     );
@@ -94,7 +90,7 @@ export const resendOtp = async (phone) => {
 
   try {
 
-    const { data } = await API.post(
+    const { data } = await api.post(
       "/otp/send",
       { phone }
     );
@@ -120,7 +116,7 @@ export const getProfile = async (token) => {
 
   try {
 
-    const { data } = await API.get(
+    const { data } = await api.get(
       "/auth/profile",
       {
         headers: {
