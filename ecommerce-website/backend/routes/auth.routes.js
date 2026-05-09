@@ -1,0 +1,48 @@
+const express = require("express");
+
+const router = express.Router();
+
+const {
+  registerUser,
+  loginUser,
+  getProfile,
+  verifyPhone,
+} = require("../controllers/auth.controller");
+
+const {
+  protect,
+} = require("../middleware/auth.middleware");
+
+const {
+  authLimiter,
+} = require("../middleware/rateLimiter");
+
+/* AUTH */
+
+router.post(
+  "/register",
+  authLimiter,
+  registerUser
+);
+
+router.post(
+  "/login",
+  // authLimiter,
+  loginUser
+);
+
+router.post(
+  "/verify-phone",
+  authLimiter,
+  verifyPhone
+);
+
+/* PROFILE */
+
+router.get(
+  "/profile",
+  protect,
+  getProfile
+);
+
+module.exports = router;

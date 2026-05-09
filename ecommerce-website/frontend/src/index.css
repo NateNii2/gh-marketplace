@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+@import "tailwindcss";
+
+/* Base styles */
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #ffffff;
+  color: #0e0c0c;
+}
+
+
+/* Components layer (REQUIRED for @apply) */
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .admin-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease;
+  }
+
+  .admin-card:hover {
+    transform: scale(1.05);
+  }
+
+  .input {
+    @apply w-full border border-gray-300 rounded-lg px-4 py-2
+           text-black bg-white
+           placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-black;
+  }
+}
