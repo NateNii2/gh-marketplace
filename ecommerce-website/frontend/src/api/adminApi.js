@@ -1,37 +1,29 @@
-import axios from "axios";
+import api from "./axios";
 
-const BASE_URL =
-  import.meta.env.VITE_API_URL ||
-  "http://localhost:5000/api";
-
-const API = axios.create({
-  baseURL: `${BASE_URL}/admin`,
+const authConfig = (token) => ({
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
 });
 
-/* =========================
-   USERS
-========================= */
+/* USERS */
 
 export const fetchUsers = async (token) => {
-  const { data } = await API.get("/users", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const { data } = await api.get(
+    "/admin/users",
+    authConfig(token)
+  );
 
   return data;
 };
 
-/* =========================
-   ORDERS
-========================= */
+/* ORDERS */
 
 export const fetchOrders = async (token) => {
-  const { data } = await API.get("/orders", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const { data } = await api.get(
+    "/admin/orders",
+    authConfig(token)
+  );
 
   return data;
 };
@@ -40,29 +32,22 @@ export const markOrderDelivered = async (
   id,
   token
 ) => {
-  const { data } = await API.put(
-    `/orders/${id}/deliver`,
+  const { data } = await api.put(
+    `/admin/orders/${id}/deliver`,
     {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+    authConfig(token)
   );
 
   return data;
 };
 
-/* =========================
-   PRODUCTS
-========================= */
+/* PRODUCTS */
 
 export const fetchProducts = async (token) => {
-  const { data } = await API.get("/products", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const { data } = await api.get(
+    "/admin/products",
+    authConfig(token)
+  );
 
   return data;
 };
@@ -71,14 +56,10 @@ export const createProduct = async (
   productData,
   token
 ) => {
-  const { data } = await API.post(
-    "/products",
+  const { data } = await api.post(
+    "/admin/products",
     productData,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+    authConfig(token)
   );
 
   return data;
@@ -89,14 +70,10 @@ export const updateProduct = async (
   productData,
   token
 ) => {
-  const { data } = await API.put(
-    `/products/${id}`,
+  const { data } = await api.put(
+    `/admin/products/${id}`,
     productData,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+    authConfig(token)
   );
 
   return data;
@@ -106,31 +83,21 @@ export const deleteProduct = async (
   id,
   token
 ) => {
-  const { data } = await API.delete(
-    `/products/${id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+  const { data } = await api.delete(
+    `/admin/products/${id}`,
+    authConfig(token)
   );
 
   return data;
 };
 
-/* =========================
-   DASHBOARD
-========================= */
+/* DASHBOARD */
 
 export const fetchDashboardStats =
   async (token) => {
-    const { data } = await API.get(
-      "/dashboard",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+    const { data } = await api.get(
+      "/admin/dashboard",
+      authConfig(token)
     );
 
     return data;

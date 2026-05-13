@@ -4,7 +4,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const hpp = require("hpp");
-const adminDashboardRoutes = require("./routes/adminDashboard.routes");
+// const adminDashboardRoutes = require("./routes/adminDashboard.routes");
 
 require("dotenv").config();
 
@@ -113,7 +113,7 @@ app.use("/api/newsletter", require("./routes/newsletter.routes"));
 
 app.use("/api/admin", require("./routes/admin.routes"));
 
-app.use("/api/admin/dashboard", require("./routes/adminDashboard.routes"));
+// app.use("/api/admin/dashboard", require("./routes/adminDashboard.routes"));
 
 app.use("/api/upload", require("./routes/upload.routes"));
 
