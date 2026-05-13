@@ -52,10 +52,10 @@ app.use(hpp());
    GLOBAL RATE LIMIT
 ================================================== */
 
-app.use(
-  "/api/admin/dashboard",
-  adminDashboardRoutes
-);
+// app.use(
+//   "/api/admin/dashboard",
+//   adminDashboardRoutes
+// );
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
