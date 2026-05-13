@@ -2,9 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { createOrder, initPayment } from "../api/orderApi";
-
-/* ---------------- GHANA REGIONS ---------------- */
+import { initPayment } from "../api/orderApi";
 
 const REGIONS = {
   "Greater Accra": [
@@ -38,7 +36,7 @@ const Checkout = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(false); // ✅ FIX
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -64,22 +62,11 @@ const Checkout = () => {
     [cartItems]
   );
 
-  /* ---------------- SUBMIT ---------------- */
-
   const handleSubmit = async () => {
-    // ✅ HARD STOP (prevents double execution)
     if (loading) return;
 
-    // ✅ BASIC GUARDS
-    if (!user?.token) {
-      console.error("User not authenticated");
-      return;
-    }
-
-    if (cartItems.length === 0) {
-      console.error("Cart is empty");
-      return;
-    }
+    if (!user?.token) return;
+    if (cartItems.length === 0) return;
 
     setLoading(true);
 
@@ -90,48 +77,37 @@ const Checkout = () => {
         paymentMethod = "cod";
       }
 
-      /* CREATE ORDER */
-      const order = await createOrder(
-        {
-          orderItems: cartItems.map((i) => ({
-            product: i._id,
-            name: i.name,
-            qty: i.qty,
-            price: i.price,
-          })),
+      const pendingOrder = {
+        orderItems: cartItems.map((i) => ({
+          product: i._id,
+          name: i.name,
+          qty: i.qty,
+          price: i.price,
+        })),
 
-          shippingAddress: {
-            fullName: form.fullName,
-            phone: form.phone,
-            altPhone: form.altPhone,
-            region: form.region,
-            city: form.city,
-            exactLocation: form.exactLocation,
-          },
-
-          deliveryMethod: form.deliveryMethod,
-          paymentMethod,
-          totalPrice,
+        shippingAddress: {
+          fullName: form.fullName,
+          phone: form.phone,
+          altPhone: form.altPhone,
+          region: form.region,
+          city: form.city,
+          exactLocation: form.exactLocation,
         },
-        user.token
+
+        deliveryMethod: form.deliveryMethod,
+        paymentMethod,
+        totalPrice,
+      };
+
+      /* SAVE TEMP ORDER */
+      localStorage.setItem(
+        "pendingOrder",
+        JSON.stringify(pendingOrder)
       );
-      // ✅ SAVE ORDER LOCALLY
-localStorage.setItem(
-  "latestOrder",
-  JSON.stringify(order)
-);
 
-      /* PICKUP */
-      if (isPickup) {
-        clearCart();
-        navigate("/success?pickup=true");
-        return;
-      }
-
-      /* COD */
-      if (paymentMethod === "cod") {
-        clearCart();
-        navigate("/success?cod=true");
+      /* PICKUP OR COD */
+      if (isPickup || paymentMethod === "cod") {
+        navigate("/success?offline=true");
         return;
       }
 
@@ -140,19 +116,16 @@ localStorage.setItem(
         {
           email: user.email,
           amount: totalPrice,
-          orderId: order._id,
         },
         user.token
       );
 
-      // ✅ Prevent further interaction immediately
       window.location.href = payment.authorization_url;
 
     } catch (err) {
-      console.error("CHECKOUT ERROR:", err);
+      console.error(err);
       navigate("/failed");
     } finally {
-      // ⚠️ Will not run if redirect happens (fine)
       setLoading(false);
     }
   };

@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const hpp = require("hpp");
+const adminDashboardRoutes = require("./routes/adminDashboard.routes");
 
 require("dotenv").config();
 
@@ -50,6 +51,11 @@ app.use(hpp());
 /* ==================================================
    GLOBAL RATE LIMIT
 ================================================== */
+
+app.use(
+  "/api/admin/dashboard",
+  adminDashboardRoutes
+);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

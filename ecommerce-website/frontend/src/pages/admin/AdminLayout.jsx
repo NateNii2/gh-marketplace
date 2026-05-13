@@ -67,12 +67,12 @@ const AdminLayout = () => {
     Admin Panel
   </h2>
 
-  <Link
-    to="/"
-    className="block text-center bg-black text-white py-2 rounded-xl text-sm hover:opacity-90 transition"
-  >
-    ← Back to Homepage
-  </Link>
+  <button
+  onClick={() => navigate("/")}
+  className="md:hidden w-full bg-yellow-400 py-3 rounded-xl font-medium"
+>
+  Back to Homepage
+</button>
 
 </div>
 

@@ -7,6 +7,8 @@ const {
   loginUser,
   getProfile,
   verifyPhone,
+  changePassword,
+deleteAccount,
 } = require("../controllers/auth.controller");
 
 const {
@@ -35,6 +37,18 @@ router.post(
   "/verify-phone",
   authLimiter,
   verifyPhone
+);
+
+router.put(
+  "/change-password",
+  protect,
+  changePassword
+);
+
+router.delete(
+  "/delete-account",
+  protect,
+  deleteAccount
 );
 
 /* PROFILE */
