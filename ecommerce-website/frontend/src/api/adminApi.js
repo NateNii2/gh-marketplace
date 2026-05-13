@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const API = axios.create({
-  baseURL: `${BASE_URL}/admin`,
+  baseURL:
+    `${
+      import.meta.env.VITE_API_URL
+    }/admin`,
 });
 
 /* =========================
@@ -13,36 +13,6 @@ const API = axios.create({
 
 export const fetchUsers = async (token) => {
   const { data } = await API.get("/users", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return data;
-};
-
-export const fetchUser = async (id, token) => {
-  const { data } = await API.get(`/users/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return data;
-};
-
-export const updateUser = async (id, payload, token) => {
-  const { data } = await API.put(`/users/${id}`, payload, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return data;
-};
-
-export const deleteUser = async (id, token) => {
-  const { data } = await API.delete(`/users/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -65,7 +35,10 @@ export const fetchOrders = async (token) => {
   return data;
 };
 
-export const markOrderDelivered = async (id, token) => {
+export const markOrderDelivered = async (
+  id,
+  token
+) => {
   const { data } = await API.put(
     `/orders/${id}/deliver`,
     {},
@@ -75,26 +48,6 @@ export const markOrderDelivered = async (id, token) => {
       },
     }
   );
-
-  return data;
-};
-
-export const updateOrder = async (id, payload, token) => {
-  const { data } = await API.put(`/orders/${id}`, payload, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  return data;
-};
-
-export const deleteOrder = async (id, token) => {
-  const { data } = await API.delete(`/orders/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
 
   return data;
 };
@@ -113,7 +66,10 @@ export const fetchProducts = async (token) => {
   return data;
 };
 
-export const createProduct = async (productData, token) => {
+export const createProduct = async (
+  productData,
+  token
+) => {
   const { data } = await API.post(
     "/products",
     productData,
@@ -145,12 +101,18 @@ export const updateProduct = async (
   return data;
 };
 
-export const deleteProduct = async (id, token) => {
-  const { data } = await API.delete(`/products/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const deleteProduct = async (
+  id,
+  token
+) => {
+  const { data } = await API.delete(
+    `/products/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   return data;
 };
@@ -159,12 +121,16 @@ export const deleteProduct = async (id, token) => {
    DASHBOARD
 ========================= */
 
-export const fetchDashboardStats = async (token) => {
-  const { data } = await API.get("/dashboard", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const fetchDashboardStats =
+  async (token) => {
+    const { data } = await API.get(
+      "/dashboard",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-  return data;
-};
+    return data;
+  };

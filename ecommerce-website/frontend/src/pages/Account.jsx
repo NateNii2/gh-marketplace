@@ -1,11 +1,32 @@
+import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+
 import { useAuth } from "../context/AuthContext";
+
+import {
+  changePassword,
+  deleteAccount,
+} from "../api/accountApi";
 
 export default function Account() {
 
-  const { user, logout } = useAuth();
+  const {
+    user,
+    token,
+    logout,
+  } = useAuth();
 
   const navigate = useNavigate();
+
+  const [currentPassword, setCurrentPassword] =
+    useState("");
+
+  const [newPassword, setNewPassword] =
+    useState("");
+
+  const [message, setMessage] =
+    useState("");
 
   const handleLogout = () => {
 
@@ -13,6 +34,81 @@ export default function Account() {
 
     navigate("/login");
   };
+
+  /* =========================
+     CHANGE PASSWORD
+  ========================= */
+
+  const handlePasswordChange =
+    async () => {
+
+      try {
+
+        const res =
+          await changePassword(
+            {
+              currentPassword,
+              newPassword,
+            },
+            token
+          );
+
+        setMessage(
+          res.message ||
+            "Password changed successfully"
+        );
+
+        setCurrentPassword("");
+
+        setNewPassword("");
+
+      } catch (err) {
+
+        setMessage(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Failed to change password"
+        );
+      }
+    };
+
+  /* =========================
+     DELETE ACCOUNT
+  ========================= */
+
+  const handleDeleteAccount =
+    async () => {
+
+      const confirmDelete =
+        window.confirm(
+          "Are you sure you want to permanently delete your account?"
+        );
+
+      if (!confirmDelete) return;
+
+      try {
+
+        const res =
+          await deleteAccount(token);
+
+        alert(
+          res.message ||
+            "Account deleted"
+        );
+
+        logout();
+
+        navigate("/");
+
+      } catch (err) {
+
+        setMessage(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Failed to delete account"
+        );
+      }
+    };
 
   return (
 
@@ -190,6 +286,8 @@ export default function Account() {
 
                 <div className="mt-5 space-y-4">
 
+                  {/* ORDERS */}
+
                   <button
                     onClick={() => navigate("/orders")}
                     className="w-full text-left px-5 py-4 rounded-2xl border hover:bg-gray-50 transition"
@@ -209,12 +307,86 @@ export default function Account() {
 
                   </button>
 
+                  {/* CHANGE PASSWORD */}
+
+                  <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
+
+                    <h3 className="font-semibold text-gray-900">
+
+                      Change Password
+
+                    </h3>
+
+                    <input
+                      type="password"
+                      placeholder="Current Password"
+                      className="input"
+                      value={currentPassword}
+                      onChange={(e) =>
+                        setCurrentPassword(
+                          e.target.value
+                        )
+                      }
+                    />
+
+                    <input
+                      type="password"
+                      placeholder="New Password"
+                      className="input"
+                      value={newPassword}
+                      onChange={(e) =>
+                        setNewPassword(
+                          e.target.value
+                        )
+                      }
+                    />
+
+                    <button
+                      onClick={
+                        handlePasswordChange
+                      }
+                      className="w-full bg-black text-white py-3 rounded-2xl hover:opacity-90 transition font-medium"
+                    >
+
+                      Change Password
+
+                    </button>
+
+                  </div>
+
+                  {/* MESSAGE */}
+
+                  {message && (
+
+                    <div className="bg-blue-50 border border-blue-100 text-blue-700 text-sm rounded-2xl p-4">
+
+                      {message}
+
+                    </div>
+
+                  )}
+
+                  {/* LOGOUT */}
+
                   <button
                     onClick={handleLogout}
                     className="w-full px-5 py-4 rounded-2xl bg-red-500 hover:bg-red-600 transition text-white font-semibold"
                   >
 
                     Logout
+
+                  </button>
+
+                  {/* DELETE ACCOUNT */}
+
+                  <button
+                    onClick={
+                      handleDeleteAccount
+                    }
+                    className="w-full px-5 py-4 rounded-2xl bg-black hover:bg-gray-900 transition text-white font-semibold"
+                  >
+
+                    Delete Account
 
                   </button>
 
