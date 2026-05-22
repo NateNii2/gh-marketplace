@@ -16,7 +16,10 @@ import logo from "../assets/gh-marketplace-logo.png.jpeg";
 
 const Navbar = () => {
   const { user, isAdmin, logout } = useAuth();
-  const { cartItems } = useCart();
+  const {
+  cartItems,
+  cartPulse,
+} = useCart();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -78,13 +81,32 @@ const Navbar = () => {
             Shop
           </Link>
 
-          <Link to="/cart" className="relative">
+          <Link
+  to="/cart"
+  className={`relative transition-all duration-300 ${
+    cartPulse
+      ? "scale-125"
+      : "scale-100"
+  }`}
+>
             <ShoppingCart size={22} />
-            {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                {cartItems.length}
-              </span>
-            )}
+           {cartItems.length > 0 && (
+  <>
+    <span
+      className={`absolute -top-2 -right-2 bg-blue-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full transition-all duration-300 ${
+        cartPulse
+          ? "animate-bounce"
+          : ""
+      }`}
+    >
+      {cartItems.length}
+    </span>
+
+    {cartPulse && (
+      <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />
+    )}
+  </>
+)}
           </Link>
 
           {user && (

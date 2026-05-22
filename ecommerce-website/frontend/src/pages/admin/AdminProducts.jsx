@@ -169,7 +169,7 @@ const AdminProducts = () => {
 
   return (
     <div className="p-4 md:p-6 space-y-8 max-w-7xl mx-auto">
-      
+
       {/* HEADER */}
       <div>
         <h1 className="text-3xl font-semibold">Products</h1>
@@ -178,11 +178,10 @@ const AdminProducts = () => {
 
       {/* MESSAGE */}
       {message && (
-        <div className={`p-3 rounded-lg text-sm ${
-          message.type === "error"
-            ? "bg-red-100 text-red-700"
-            : "bg-green-100 text-green-700"
-        }`}>
+        <div className={`p-3 rounded-lg text-sm ${message.type === "error"
+          ? "bg-red-100 text-red-700"
+          : "bg-green-100 text-green-700"
+          }`}>
           {message.text}
         </div>
       )}
@@ -192,32 +191,32 @@ const AdminProducts = () => {
         <h2 className="text-lg font-semibold">Add Product</h2>
 
         <div className="grid md:grid-cols-2 gap-4">
-          <input className="input" placeholder="Name" value={name} onChange={(e)=>setName(e.target.value)} required />
-          <input type="number" className="input" placeholder="Price" value={price} onChange={(e)=>setPrice(e.target.value)} required />
+          <input className="input" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
+          <input type="number" className="input" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} required />
         </div>
 
-        <select className="input" value={category} onChange={(e)=>setCategory(e.target.value)}>
+        <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
           {CATEGORIES.map(c => <option key={c}>{c}</option>)}
         </select>
 
-        <input className="input" placeholder="Image URL" value={image} onChange={(e)=>setImage(e.target.value)} />
+        <input className="input" placeholder="Image URL" value={image} onChange={(e) => setImage(e.target.value)} />
 
-        <textarea className="input min-h-[100px]" placeholder="Description" value={description} onChange={(e)=>setDescription(e.target.value)} />
+        <textarea className="input min-h-[100px]" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
 
         {/* VARIANTS */}
         <div className="border rounded-xl p-4 space-y-3">
           <h3 className="font-medium">Variants</h3>
 
-          <div className="flex gap-2">
-            <input className="input flex-1" placeholder="Label" value={variantLabel} onChange={(e)=>setVariantLabel(e.target.value)} />
-            <input type="number" className="input w-32" placeholder="Price" value={variantPrice} onChange={(e)=>setVariantPrice(e.target.value)} />
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input className="input flex-1" placeholder="Label" value={variantLabel} onChange={(e) => setVariantLabel(e.target.value)} />
+            <input type="number" className="input w-32" placeholder="Price" value={variantPrice} onChange={(e) => setVariantPrice(e.target.value)} />
             <button type="button" onClick={addVariant} className="bg-black text-white px-4 rounded-lg">Add</button>
           </div>
 
-          {variants.map((v,i)=>(
+          {variants.map((v, i) => (
             <div key={i} className="flex justify-between bg-gray-100 p-2 rounded">
               <span>{v.label} - GHS {v.price}</span>
-              <button onClick={()=>removeVariant(i)} className="text-red-500 text-sm">Remove</button>
+              <button onClick={() => removeVariant(i)} className="text-red-500 text-sm">Remove</button>
             </div>
           ))}
         </div>
@@ -228,8 +227,8 @@ const AdminProducts = () => {
       </form>
 
       {/* TABLE */}
-      <div className="bg-white border rounded-2xl overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white border rounded-2xl overflow-x-auto">
+        <table className="min-w-[700px] w-full text-sm">
           <thead className="bg-gray-50">
             <tr>
               <th className="p-4 text-left">Product</th>
@@ -240,22 +239,26 @@ const AdminProducts = () => {
           </thead>
 
           <tbody>
-            {products.map(p=>(
+            {products.map(p => (
               <tr key={p._id} className="border-t">
-                <td className="p-4 flex gap-3">
-                  {p.image && <img src={p.image} className="w-14 h-14 rounded object-cover" />}
-                  <div>
-                    <p className="font-medium">{p.name}</p>
-                    <p className="text-xs text-gray-500">{p.description}</p>
+                <td className="p-4">
+                  <div className="flex gap-3 min-w-[220px]">
+                    {p.image && <img src={p.image} className="w-14 h-14 rounded object-cover" />}
+                    <div>
+                      <p className="font-medium">{p.name}</p>
+                      <p className="text-xs text-gray-500">{p.description}</p>
+                    </div>
                   </div>
                 </td>
 
                 <td className="p-4">{p.category}</td>
                 <td className="p-4">GHS {p.price}</td>
 
-                <td className="p-4 space-y-2">
-                  <button onClick={()=>startEdit(p)} className="px-3 py-1 bg-gray-100 rounded">Edit</button>
-                  <button onClick={()=>handleDelete(p._id)} className="px-3 py-1 bg-red-500 text-white rounded">Delete</button>
+                <td className="p-4">
+                  <div className="flex flex-col gap-2">
+                    <button onClick={() => startEdit(p)} className="px-3 py-1 bg-gray-100 rounded">Edit</button>
+                    <button onClick={() => handleDelete(p._id)} className="px-3 py-1 bg-red-500 text-white rounded">Delete</button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -266,42 +269,42 @@ const AdminProducts = () => {
       {/* EDIT MODAL */}
       {editingId && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl p-4 md:p-6 w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
 
             <h2 className="text-xl font-semibold">Edit Product</h2>
 
-            <input className="input" value={editData.name} onChange={(e)=>setEditData({...editData,name:e.target.value})} />
-            <input type="number" className="input" value={editData.price} onChange={(e)=>setEditData({...editData,price:Number(e.target.value)})} />
+            <input className="input" value={editData.name} onChange={(e) => setEditData({ ...editData, name: e.target.value })} />
+            <input type="number" className="input" value={editData.price} onChange={(e) => setEditData({ ...editData, price: Number(e.target.value) })} />
 
-            <select className="input" value={editData.category} onChange={(e)=>setEditData({...editData,category:e.target.value})}>
-              {CATEGORIES.map(c=><option key={c}>{c}</option>)}
+            <select className="input" value={editData.category} onChange={(e) => setEditData({ ...editData, category: e.target.value })}>
+              {CATEGORIES.map(c => <option key={c}>{c}</option>)}
             </select>
 
-            <input className="input" value={editData.image} onChange={(e)=>setEditData({...editData,image:e.target.value})} />
+            <input className="input" value={editData.image} onChange={(e) => setEditData({ ...editData, image: e.target.value })} />
 
-            <textarea className="input" value={editData.description} onChange={(e)=>setEditData({...editData,description:e.target.value})} />
+            <textarea className="input" value={editData.description} onChange={(e) => setEditData({ ...editData, description: e.target.value })} />
 
             {/* EDIT VARIANTS */}
             <div className="space-y-2">
               <h3 className="font-medium">Variants</h3>
 
               <div className="flex gap-2">
-                <input className="input flex-1" placeholder="Label" value={variantLabel} onChange={(e)=>setVariantLabel(e.target.value)} />
-                <input type="number" className="input w-32" placeholder="Price" value={variantPrice} onChange={(e)=>setVariantPrice(e.target.value)} />
+                <input className="input flex-1" placeholder="Label" value={variantLabel} onChange={(e) => setVariantLabel(e.target.value)} />
+                <input type="number" className="input w-32" placeholder="Price" value={variantPrice} onChange={(e) => setVariantPrice(e.target.value)} />
                 <button onClick={addEditVariant} className="bg-black text-white px-3 rounded">Add</button>
               </div>
 
-              {editData.variants?.map((v,i)=>(
+              {editData.variants?.map((v, i) => (
                 <div key={i} className="flex justify-between bg-gray-100 p-2 rounded">
                   <span>{v.label} - GHS {v.price}</span>
-                  <button onClick={()=>removeEditVariant(i)} className="text-red-500 text-sm">Remove</button>
+                  <button onClick={() => removeEditVariant(i)} className="text-red-500 text-sm">Remove</button>
                 </div>
               ))}
             </div>
 
             <div className="flex gap-3">
-              <button onClick={()=>saveEdit(editingId)} className="bg-black text-white px-5 py-2 rounded-lg">Save</button>
-              <button onClick={()=>setEditingId(null)} className="bg-gray-200 px-5 py-2 rounded-lg">Cancel</button>
+              <button onClick={() => saveEdit(editingId)} className="bg-black text-white px-5 py-2 rounded-lg">Save</button>
+              <button onClick={() => setEditingId(null)} className="bg-gray-200 px-5 py-2 rounded-lg">Cancel</button>
             </div>
 
           </div>

@@ -189,48 +189,96 @@ exports.markDelivered = async (req, res) => {
    INIT PAYSTACK
 ================================================== */
 
-exports.initPaystackPayment = async (req, res) => {
-  try {
-    const { email, amount, orderId } = req.body;
+exports.initPaystackPayment =
+  async (req, res) => {
+    try {
+      const {
+        email,
+        amount,
+        orderId,
+      } = req.body;
 
-    console.log("INIT PAYMENT:", { email, amount, orderId });
+      console.log(
+        "INIT PAYMENT:",
+        {
+          email,
+          amount,
+          orderId,
+        }
+      );
 
-    if (!email || !amount || !orderId) {
-      return res.status(400).json({
-        message: "Missing payment fields",
+      if (
+        !email ||
+        !amount ||
+        !orderId
+      ) {
+        return res.status(400).json({
+          message:
+            "Missing payment fields",
+        });
+      }
+
+      const cleanEmail =
+        email
+          ?.trim()
+          ?.toLowerCase();
+
+      const callbackUrl = `${process.env.FRONTEND_URL}/success`;
+
+      const response =
+        await axios.post(
+          "https://api.paystack.co/transaction/initialize",
+          {
+            email: cleanEmail,
+
+            amount: Math.round(
+              amount * 100
+            ),
+
+            currency: "GHS",
+
+            metadata: {
+              orderId,
+            },
+
+            callback_url:
+              callbackUrl,
+          },
+
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+
+              "Content-Type":
+                "application/json",
+            },
+          }
+        );
+
+      console.log(
+        "PAYSTACK INIT RESPONSE:",
+        response.data
+      );
+
+      res.json({
+        success: true,
+
+        data: response.data.data,
+      });
+
+    } catch (err) {
+      console.error(
+        "PAYSTACK INIT ERROR:",
+        err.response?.data ||
+          err.message
+      );
+
+      res.status(500).json({
+        message:
+          "Payment initialization failed",
       });
     }
-
-    const callbackUrl = `${process.env.FRONTEND_URL}/success`;
-
-    const response = await axios.post(
-      "https://api.paystack.co/transaction/initialize",
-      {
-        email,
-        amount: Math.round(amount * 100),
-        currency: "GHS",
-        metadata: { orderId },
-        callback_url: callbackUrl,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    console.log("PAYSTACK INIT RESPONSE:", response.data);
-
-    res.json(response.data.data);
-
-  } catch (err) {
-    console.error("PAYSTACK INIT ERROR:", err.response?.data || err.message);
-    res.status(500).json({
-      message: "Payment initialization failed",
-    });
-  }
-};
+  };
 
 /* ==================================================
    VERIFY PAYSTACK

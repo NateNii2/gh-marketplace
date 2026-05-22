@@ -41,3 +41,14 @@ body {
            focus:outline-none focus:ring-2 focus:ring-black;
   }
 }
+.input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 12px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: black;
+}
