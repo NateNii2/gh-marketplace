@@ -146,7 +146,7 @@ const Checkout = () => {
         `${
           import.meta.env
             .VITE_API_URL
-        }/api/orders`,
+        }/orders`,
         {
           method: "POST",
 
