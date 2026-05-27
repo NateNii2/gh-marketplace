@@ -78,70 +78,75 @@ const Checkout = () => {
      SUBMIT
   ========================= */
 
-  const handleSubmit = async () => {
+ const handleSubmit = async () => {
 
-    if (loading) return;
+  if (loading) return;
 
-    if (!user?.token) return;
+  if (!user?.token) return;
 
-    if (cartItems.length === 0) return;
+  if (cartItems.length === 0) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
+  try {
 
-      let paymentMethod =
-        "paystack";
+    let paymentMethod =
+      "paystack";
 
-      if (
-        isAccra &&
-        form.paymentMethod ===
-          "cod"
-      ) {
-        paymentMethod = "cod";
-      }
+    if (
+      isAccra &&
+      form.paymentMethod === "cod"
+    ) {
+      paymentMethod = "cod";
+    }
 
-      /* =========================
-         CREATE ORDER PAYLOAD
-      ========================= */
+    /* =========================
+       CREATE ORDER PAYLOAD
+    ========================= */
 
-      const orderPayload = {
-        orderItems:
-          cartItems.map((i) => ({
-            product: i._id,
-            qty: i.qty,
-          })),
+    const orderPayload = {
 
-        shippingAddress: {
-          fullName:
-            form.fullName,
+      orderItems:
+        cartItems.map((i) => ({
+          product: i._id,
+          name: i.name,
+          qty: i.qty,
+          price: i.price,
+        })),
 
-          phone: form.phone,
+      shippingAddress: {
+        fullName:
+          form.fullName,
+        phone:
+          form.phone,
+        altPhone:
+          form.altPhone,
+        region:
+          form.region,
+        city:
+          form.city,
+        exactLocation:
+          form.exactLocation,
+      },
 
-          altPhone:
-            form.altPhone,
+      deliveryMethod:
+        form.deliveryMethod,
 
-          region:
-            form.region,
+      paymentMethod,
 
-          city: form.city,
+      totalPrice,
+    };
 
-          exactLocation:
-            form.exactLocation,
-        },
+    /* =========================
+       CREATE ORDER FIRST
+    ========================= */
 
-        deliveryMethod:
-          form.deliveryMethod,
-
-        paymentMethod,
-      };
-
-      /* =========================
-         CREATE ORDER
-      ========================= */
-
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/orders`,
+    const orderRes =
+      await fetch(
+        `${
+          import.meta.env
+            .VITE_API_URL
+        }/api/orders`,
         {
           method: "POST",
 
@@ -158,68 +163,69 @@ const Checkout = () => {
         }
       );
 
-      const order =
-        await res.json();
+    const createdOrder =
+      await orderRes.json();
 
-      if (!res.ok) {
-        throw new Error(
-          order.message ||
-            "Order creation failed"
-        );
-      }
-
-      /* =========================
-         OFFLINE ORDERS
-      ========================= */
-
-      if (
-        form.deliveryMethod ===
-          "pickup" ||
-        paymentMethod === "cod"
-      ) {
-
-        clearCart();
-
-        navigate(
-          `/success?order=${order._id}`
-        );
-
-        return;
-      }
-
-      /* =========================
-         PAYSTACK INIT
-      ========================= */
-
-      const payment =
-        await initPayment(
-          {
-            email: user.email,
-
-            amount:
-              order.totalPrice,
-
-            orderId: order._id,
-          },
-
-          user.token
-        );
-
-      window.location.href =
-        payment.data.authorization_url;
-
-    } catch (err) {
-
-      console.error(err);
-
-      navigate("/failed");
-
-    } finally {
-
-      setLoading(false);
+    if (!orderRes.ok) {
+      throw new Error(
+        createdOrder.message ||
+          "Order creation failed"
+      );
     }
-  };
 
+    /* =========================
+       OFFLINE PAYMENTS
+    ========================= */
+
+    if (
+      isPickup ||
+      paymentMethod === "cod"
+    ) {
+
+      clearCart();
+
+      navigate(
+        "/success?offline=true"
+      );
+
+      return;
+    }
+
+    /* =========================
+       PAYSTACK INIT
+    ========================= */
+
+    const payment =
+      await initPayment(
+        {
+          email:
+            user.email,
+
+          amount:
+            totalPrice,
+
+          orderId:
+            createdOrder._id,
+        },
+
+        user.token
+      );
+
+    window.location.href =
+      payment.data
+        .authorization_url;
+
+  } catch (err) {
+
+    console.error(err);
+
+    navigate("/failed");
+
+  } finally {
+
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen bg-gray-50 py-10 md:py-14">
 
