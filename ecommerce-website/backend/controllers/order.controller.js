@@ -22,10 +22,13 @@ exports.createOrder = async (req, res) => {
     }
 
     let totalPrice = 0;
+
     const validatedItems = [];
 
     for (const item of orderItems) {
-      const product = await Product.findById(item.product);
+
+      const product =
+        await Product.findById(item.product);
 
       if (!product) {
         return res.status(404).json({
@@ -40,51 +43,82 @@ exports.createOrder = async (req, res) => {
         price: product.price,
       });
 
-      totalPrice += product.price * item.qty;
+      totalPrice +=
+        product.price * item.qty;
     }
 
-    const isPickup = deliveryMethod === "pickup";
-    const isCOD = paymentMethod === "cod";
+    const isPickup =
+      deliveryMethod === "pickup";
+
+    const isCOD =
+      paymentMethod === "cod";
 
     const order = await Order.create({
       user: req.user._id,
+
       orderItems: validatedItems,
 
       shippingAddress: {
-        fullName: shippingAddress?.fullName || "",
-        phone: shippingAddress?.phone || "",
-        altPhone: shippingAddress?.altPhone || "",
-        region: shippingAddress?.region || "",
-        location: `${shippingAddress?.city || ""} - ${shippingAddress?.exactLocation || ""}`,
+        fullName:
+          shippingAddress?.fullName || "",
+
+        phone:
+          shippingAddress?.phone || "",
+
+        altPhone:
+          shippingAddress?.altPhone || "",
+
+        region:
+          shippingAddress?.region || "",
+
+        city:
+          shippingAddress?.city || "",
+
+        exactLocation:
+          shippingAddress?.exactLocation || "",
       },
 
       paymentMethod,
+
       deliveryMethod,
+
       totalPrice,
 
-     // ✅ ONLY PAYSTACK IS PAID
-isPaid: false,
-paidAt: null,
+      isPaid: false,
 
-paymentResult:
-  isPickup
-    ? {
-        reference: "PICKUP_ORDER",
-        status: "pickup",
-      }
-    : isCOD
-    ? {
-        reference: "COD_ORDER",
-        status: "cod",
-      }
-    : {},
+      paidAt: null,
+
+      paymentResult:
+        isPickup
+          ? {
+              reference:
+                "PICKUP_ORDER",
+
+              status: "pickup",
+            }
+          : isCOD
+          ? {
+              reference:
+                "COD_ORDER",
+
+              status: "cod",
+            }
+          : {},
     });
 
     res.status(201).json(order);
 
   } catch (err) {
-    console.error("CREATE ORDER ERROR:", err);
-    res.status(500).json({ message: "Failed to create order" });
+
+    console.error(
+      "CREATE ORDER ERROR:",
+      err
+    );
+
+    res.status(500).json({
+      message:
+        "Failed to create order",
+    });
   }
 };
 

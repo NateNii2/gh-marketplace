@@ -32,48 +32,20 @@ const Success = () => {
   useEffect(() => {
     if (hasVerified.current) return;
 
-    hasVerified.current = true;
-
     const reference =
       params.get("reference");
 
-    const trxref = params.get("trxref");
+    const trxref =
+      params.get("trxref");
 
-    const cod = params.get("cod");
-
-    const pickup = params.get("pickup");
-
-    /* =====================
-       COD / PICKUP
-    ===================== */
-
-    if (
-      cod === "true" ||
-      pickup === "true"
-    ) {
-      clearCart();
-
-      const savedOrder =
-        localStorage.getItem("latestOrder");
-
-      if (savedOrder) {
-        setOrderData(JSON.parse(savedOrder));
-      }
-
-      setMessage(
-        "Order placed successfully ✅"
-      );
-
-      setLoading(false);
-
-      return;
-    }
+    const paymentReference =
+      reference || trxref;
 
     /* =====================
        INVALID PAYMENT
     ===================== */
 
-    if (!reference && !trxref) {
+    if (!paymentReference) {
       setMessage(
         "Payment was cancelled ❌"
       );
@@ -88,14 +60,21 @@ const Success = () => {
     }
 
     /* =====================
-       VERIFY
+       WAIT FOR USER
+    ===================== */
+
+    if (!user?.token) {
+      return;
+    }
+
+    hasVerified.current = true;
+
+    /* =====================
+       VERIFY PAYMENT
     ===================== */
 
     const verify = async () => {
       try {
-        const paymentReference =
-          reference || trxref;
-
         const data =
           await verifyPayment(
             paymentReference,
@@ -113,6 +92,7 @@ const Success = () => {
         );
 
       } catch (err) {
+
         console.error(err);
 
         setMessage(
@@ -122,12 +102,15 @@ const Success = () => {
         setTimeout(() => {
           navigate("/failed");
         }, 2500);
+
       } finally {
+
         setLoading(false);
       }
     };
 
     verify();
+
   }, [
     params,
     navigate,

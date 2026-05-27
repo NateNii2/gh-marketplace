@@ -9,27 +9,29 @@ const Failed = () => {
 
       <div className="bg-white w-full max-w-md p-8 rounded-2xl shadow text-center space-y-6">
 
-        {/* ICON */}
         <div className="flex justify-center">
-          <XCircle size={60} className="text-red-500" />
+          <XCircle
+            size={60}
+            className="text-red-500"
+          />
         </div>
 
-        {/* TITLE */}
         <h1 className="text-2xl md:text-3xl font-semibold text-red-500">
-          Payment Failed
+          Payment Verification Failed
         </h1>
 
-        {/* MESSAGE */}
         <p className="text-gray-600 text-sm md:text-base">
-          Something went wrong while processing your payment.
-          Don’t worry — no money was deducted.
+          Your payment may have gone through,
+          but we could not verify it automatically.
+          Please contact support if money was deducted.
         </p>
 
-        {/* ACTIONS */}
         <div className="flex flex-col sm:flex-row gap-3 pt-4">
 
           <button
-            onClick={() => navigate("/checkout")}
+            onClick={() =>
+              navigate("/checkout")
+            }
             className="flex-1 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition"
           >
             Try Again
