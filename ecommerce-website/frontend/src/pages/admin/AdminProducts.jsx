@@ -228,43 +228,114 @@ const AdminProducts = () => {
 
       {/* TABLE */}
       <div className="bg-white border rounded-2xl overflow-x-auto">
-        <table className="min-w-[700px] w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="p-4 text-left">Product</th>
-              <th className="p-4">Category</th>
-              <th className="p-4">Price</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
 
-          <tbody>
-            {products.map(p => (
-              <tr key={p._id} className="border-t">
-                <td className="p-4">
-                  <div className="flex gap-3 min-w-[220px]">
-                    {p.image && <img src={p.image} className="w-14 h-14 rounded object-cover" />}
-                    <div>
-                      <p className="font-medium">{p.name}</p>
-                      <p className="text-xs text-gray-500">{p.description}</p>
-                    </div>
-                  </div>
-                </td>
+  <table className="min-w-[700px] w-full text-sm">
 
-                <td className="p-4">{p.category}</td>
-                <td className="p-4">GHS {p.price}</td>
+    <thead className="bg-gray-50">
 
-                <td className="p-4">
-                  <div className="flex flex-col gap-2">
-                    <button onClick={() => startEdit(p)} className="px-3 py-1 bg-gray-100 rounded">Edit</button>
-                    <button onClick={() => handleDelete(p._id)} className="px-3 py-1 bg-red-500 text-white rounded">Delete</button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <tr>
+        <th className="p-4 text-left">
+          Product
+        </th>
+
+        <th className="p-4">
+          Category
+        </th>
+
+        <th className="p-4">
+          Price
+        </th>
+
+        <th className="p-4">
+          Actions
+        </th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      {products.map((p) => (
+
+        <tr
+          key={p._id}
+          className="border-t"
+        >
+
+          {/* PRODUCT */}
+
+          <td className="p-4">
+
+            <div className="flex gap-3 min-w-[250px]">
+
+              {p.image && (
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  className="w-14 h-14 rounded object-cover shrink-0"
+                />
+              )}
+
+              <div className="min-w-0">
+
+                <p className="font-medium break-words">
+                  {p.name}
+                </p>
+
+                <p className="text-xs text-gray-500 break-words">
+                  {p.description}
+                </p>
+
+              </div>
+            </div>
+          </td>
+
+          {/* CATEGORY */}
+
+          <td className="p-4 whitespace-nowrap">
+            {p.category}
+          </td>
+
+          {/* PRICE */}
+
+          <td className="p-4 whitespace-nowrap">
+            GHS {p.price}
+          </td>
+
+          {/* ACTIONS */}
+
+          <td className="p-4">
+
+            <div className="flex flex-col gap-2 min-w-[120px]">
+
+              <button
+                onClick={() =>
+                  startEdit(p)
+                }
+                className="px-3 py-2 bg-gray-100 rounded"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() =>
+                  handleDelete(
+                    p._id
+                  )
+                }
+                className="px-3 py-2 bg-red-500 text-white rounded"
+              >
+                Delete
+              </button>
+
+            </div>
+          </td>
+        </tr>
+      ))}
+
+    </tbody>
+  </table>
+</div>
 
       {/* EDIT MODAL */}
       {editingId && (

@@ -33,7 +33,9 @@ const REGIONS = {
 
 const Checkout = () => {
   const { cartItems, clearCart } = useCart();
+
   const { user } = useAuth();
+
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -49,97 +51,186 @@ const Checkout = () => {
     paymentMethod: "paystack",
   });
 
-  const isAccra = form.region === "Greater Accra";
-  const isPickup = form.deliveryMethod === "pickup";
-  const isCOD = form.paymentMethod === "cod";
+  const isAccra =
+    form.region === "Greater Accra";
+
+  const isPickup =
+    form.deliveryMethod === "pickup";
+
+  const isCOD =
+    form.paymentMethod === "cod";
 
   const cities = useMemo(() => {
     return REGIONS[form.region] || [];
   }, [form.region]);
 
   const totalPrice = useMemo(
-    () => cartItems.reduce((s, i) => s + i.price * i.qty, 0),
+    () =>
+      cartItems.reduce(
+        (s, i) =>
+          s + i.price * i.qty,
+        0
+      ),
     [cartItems]
   );
 
+  /* =========================
+     SUBMIT
+  ========================= */
+
   const handleSubmit = async () => {
+
     if (loading) return;
 
     if (!user?.token) return;
+
     if (cartItems.length === 0) return;
 
     setLoading(true);
 
     try {
-      let paymentMethod = "paystack";
 
-      if (isAccra && form.paymentMethod === "cod") {
+      let paymentMethod =
+        "paystack";
+
+      if (
+        isAccra &&
+        form.paymentMethod ===
+          "cod"
+      ) {
         paymentMethod = "cod";
       }
 
-      const pendingOrder = {
-        orderItems: cartItems.map((i) => ({
-          product: i._id,
-          name: i.name,
-          qty: i.qty,
-          price: i.price,
-        })),
+      /* =========================
+         CREATE ORDER PAYLOAD
+      ========================= */
+
+      const orderPayload = {
+        orderItems:
+          cartItems.map((i) => ({
+            product: i._id,
+            qty: i.qty,
+          })),
 
         shippingAddress: {
-          fullName: form.fullName,
+          fullName:
+            form.fullName,
+
           phone: form.phone,
-          altPhone: form.altPhone,
-          region: form.region,
+
+          altPhone:
+            form.altPhone,
+
+          region:
+            form.region,
+
           city: form.city,
-          exactLocation: form.exactLocation,
+
+          exactLocation:
+            form.exactLocation,
         },
 
-        deliveryMethod: form.deliveryMethod,
+        deliveryMethod:
+          form.deliveryMethod,
+
         paymentMethod,
-        totalPrice,
       };
 
-      /* SAVE TEMP ORDER */
-      localStorage.setItem(
-        "pendingOrder",
-        JSON.stringify(pendingOrder)
+      /* =========================
+         CREATE ORDER
+      ========================= */
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/orders`,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Authorization: `Bearer ${user.token}`,
+          },
+
+          body: JSON.stringify(
+            orderPayload
+          ),
+        }
       );
 
-      /* PICKUP OR COD */
-      if (isPickup || paymentMethod === "cod") {
-        navigate("/success?offline=true");
+      const order =
+        await res.json();
+
+      if (!res.ok) {
+        throw new Error(
+          order.message ||
+            "Order creation failed"
+        );
+      }
+
+      /* =========================
+         OFFLINE ORDERS
+      ========================= */
+
+      if (
+        form.deliveryMethod ===
+          "pickup" ||
+        paymentMethod === "cod"
+      ) {
+
+        clearCart();
+
+        navigate(
+          `/success?order=${order._id}`
+        );
+
         return;
       }
 
-      /* PAYSTACK */
-      const payment = await initPayment(
-        {
-          email: user.email,
-          amount: totalPrice,
-        },
-        user.token
-      );
+      /* =========================
+         PAYSTACK INIT
+      ========================= */
 
-      window.location.href = payment.authorization_url;
+      const payment =
+        await initPayment(
+          {
+            email: user.email,
+
+            amount:
+              order.totalPrice,
+
+            orderId: order._id,
+          },
+
+          user.token
+        );
+
+      window.location.href =
+        payment.data.authorization_url;
 
     } catch (err) {
+
       console.error(err);
+
       navigate("/failed");
+
     } finally {
+
       setLoading(false);
     }
   };
 
-  /* ---------------- UI ---------------- */
-
   return (
     <div className="min-h-screen bg-gray-50 py-10 md:py-14">
+
       <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-8 md:gap-10 px-4 md:px-6">
 
         {/* LEFT */}
+
         <div className="lg:col-span-2 space-y-6 md:space-y-8">
 
           <div className="bg-white p-6 md:p-8 rounded-2xl shadow">
+
             <h1 className="text-xl md:text-2xl font-semibold">
               Almost there 👋
             </h1>
@@ -147,18 +238,27 @@ const Checkout = () => {
             <p className="text-gray-600 mt-1 text-sm md:text-base">
               Kindly complete your details below to finalize your order.
             </p>
+
           </div>
 
           {/* CONTACT */}
+
           <div className="bg-white p-6 md:p-8 rounded-2xl shadow space-y-4">
-            <h2 className="font-semibold">Contact Information</h2>
+
+            <h2 className="font-semibold">
+              Contact Information
+            </h2>
 
             <input
               className="input"
               placeholder="Full Name"
               value={form.fullName}
               onChange={(e) =>
-                setForm({ ...form, fullName: e.target.value })
+                setForm({
+                  ...form,
+                  fullName:
+                    e.target.value,
+                })
               }
             />
 
@@ -167,7 +267,11 @@ const Checkout = () => {
               placeholder="Phone Number"
               value={form.phone}
               onChange={(e) =>
-                setForm({ ...form, phone: e.target.value })
+                setForm({
+                  ...form,
+                  phone:
+                    e.target.value,
+                })
               }
             />
 
@@ -176,14 +280,22 @@ const Checkout = () => {
               placeholder="Alternate Phone Number"
               value={form.altPhone}
               onChange={(e) =>
-                setForm({ ...form, altPhone: e.target.value })
+                setForm({
+                  ...form,
+                  altPhone:
+                    e.target.value,
+                })
               }
             />
           </div>
 
           {/* LOCATION */}
+
           <div className="bg-white p-6 md:p-8 rounded-2xl shadow space-y-4">
-            <h2 className="font-semibold">Shipping Location</h2>
+
+            <h2 className="font-semibold">
+              Shipping Location
+            </h2>
 
             <div className="grid md:grid-cols-2 gap-4">
 
@@ -193,18 +305,29 @@ const Checkout = () => {
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    region: e.target.value,
+                    region:
+                      e.target.value,
                     city: "",
-                    exactLocation: "",
-                    deliveryMethod: "delivery",
-                    paymentMethod: "paystack",
+                    exactLocation:
+                      "",
+                    deliveryMethod:
+                      "delivery",
+                    paymentMethod:
+                      "paystack",
                   })
                 }
               >
-                <option value="">Select Region</option>
 
-                {Object.keys(REGIONS).map((r) => (
-                  <option key={r}>{r}</option>
+                <option value="">
+                  Select Region
+                </option>
+
+                {Object.keys(
+                  REGIONS
+                ).map((r) => (
+                  <option key={r}>
+                    {r}
+                  </option>
                 ))}
               </select>
 
@@ -212,67 +335,105 @@ const Checkout = () => {
                 className="input"
                 value={form.city}
                 onChange={(e) =>
-                  setForm({ ...form, city: e.target.value })
+                  setForm({
+                    ...form,
+                    city:
+                      e.target.value,
+                  })
                 }
                 disabled={!form.region}
               >
-                <option value="">Select City</option>
+
+                <option value="">
+                  Select City
+                </option>
 
                 {cities.map((c) => (
-                  <option key={c}>{c}</option>
+                  <option key={c}>
+                    {c}
+                  </option>
                 ))}
               </select>
+
             </div>
 
             <textarea
               className="input min-h-[120px] resize-none"
               placeholder="Enter your exact location..."
-              value={form.exactLocation}
+              value={
+                form.exactLocation
+              }
               onChange={(e) =>
                 setForm({
                   ...form,
-                  exactLocation: e.target.value,
+                  exactLocation:
+                    e.target.value,
                 })
               }
             />
+
           </div>
 
           {/* DELIVERY */}
+
           <div className="bg-white p-6 md:p-8 rounded-2xl shadow space-y-4">
-            <h2 className="font-semibold">Delivery Method</h2>
+
+            <h2 className="font-semibold">
+              Delivery Method
+            </h2>
 
             <select
               className="input"
-              value={form.deliveryMethod}
+              value={
+                form.deliveryMethod
+              }
               onChange={(e) =>
                 setForm({
                   ...form,
-                  deliveryMethod: e.target.value,
-                  paymentMethod: "paystack",
+                  deliveryMethod:
+                    e.target.value,
+                  paymentMethod:
+                    "paystack",
                 })
               }
             >
-              <option value="delivery">Delivery</option>
 
-              {isAccra && <option value="pickup">Pickup</option>}
+              <option value="delivery">
+                Delivery
+              </option>
+
+              {isAccra && (
+                <option value="pickup">
+                  Pickup
+                </option>
+              )}
             </select>
+
           </div>
 
           {/* PAYMENT */}
+
           {!isPickup && (
             <div className="bg-white p-6 md:p-8 rounded-2xl shadow space-y-4">
-              <h2 className="font-semibold">Payment Method</h2>
+
+              <h2 className="font-semibold">
+                Payment Method
+              </h2>
 
               <select
                 className="input"
-                value={form.paymentMethod}
+                value={
+                  form.paymentMethod
+                }
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    paymentMethod: e.target.value,
+                    paymentMethod:
+                      e.target.value,
                   })
                 }
               >
+
                 <option value="paystack">
                   Mobile Money (MOMO)
                 </option>
@@ -283,28 +444,48 @@ const Checkout = () => {
                   </option>
                 )}
               </select>
+
             </div>
           )}
         </div>
 
         {/* SUMMARY */}
+
         <div className="bg-white p-5 md:p-6 rounded-2xl shadow space-y-5 h-fit">
 
-          <h3 className="font-semibold">Order Summary</h3>
+          <h3 className="font-semibold">
+            Order Summary
+          </h3>
 
           {cartItems.map((i) => (
-            <div key={i._id} className="flex justify-between text-sm">
-              <span>{i.name} × {i.qty}</span>
-              <span>₵{(i.price * i.qty).toFixed(2)}</span>
+            <div
+              key={i._id}
+              className="flex justify-between text-sm"
+            >
+              <span>
+                {i.name} × {i.qty}
+              </span>
+
+              <span>
+                ₵
+                {(
+                  i.price * i.qty
+                ).toFixed(2)}
+              </span>
             </div>
           ))}
 
           <div className="border-t pt-4 flex justify-between font-semibold">
+
             <span>Total</span>
-            <span>₵{totalPrice.toFixed(2)}</span>
+
+            <span>
+              ₵
+              {totalPrice.toFixed(2)}
+            </span>
+
           </div>
 
-          {/* ✅ FIXED BUTTON */}
           <button
             onClick={handleSubmit}
             disabled={loading}
@@ -314,11 +495,13 @@ const Checkout = () => {
                 : "bg-yellow-400 hover:opacity-90"
             }`}
           >
+
             {loading
               ? "Processing..."
               : isPickup || isCOD
               ? "Place Order"
               : "Pay with Mobile Money"}
+
           </button>
 
         </div>
