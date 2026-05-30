@@ -7,7 +7,7 @@ const sendSMS = async (to, message) => {
         action: "send-sms",
         api_key: process.env.ARKESEL_API_KEY,
         to,
-        from: "GHMarketplace",
+        from: "GHMarket",
         sms: message,
       },
     });
