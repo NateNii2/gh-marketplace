@@ -5,7 +5,6 @@ import {
 } from "react-router-dom";
 
 import { verifyPayment } from "../api/orderApi";
-
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
@@ -31,6 +30,29 @@ const Success = () => {
 
   useEffect(() => {
     if (hasVerified.current) return;
+
+    hasVerified.current = true;
+
+    const offline =
+      params.get("offline");
+
+    /* =====================
+       COD / PICKUP
+    ===================== */
+
+    if (offline === "true") {
+      clearCart();
+
+      localStorage.removeItem("cart");
+
+      setMessage(
+        "Order placed successfully ✅"
+      );
+
+      setLoading(false);
+
+      return;
+    }
 
     const reference =
       params.get("reference");
@@ -60,14 +82,12 @@ const Success = () => {
     }
 
     /* =====================
-       WAIT FOR USER
+       WAIT FOR USER TOKEN
     ===================== */
 
     if (!user?.token) {
       return;
     }
-
-    hasVerified.current = true;
 
     /* =====================
        VERIFY PAYMENT
@@ -92,7 +112,6 @@ const Success = () => {
         );
 
       } catch (err) {
-
         console.error(err);
 
         setMessage(
@@ -104,7 +123,6 @@ const Success = () => {
         }, 2500);
 
       } finally {
-
         setLoading(false);
       }
     };
@@ -153,8 +171,7 @@ const Success = () => {
                       className="flex justify-between"
                     >
                       <span>
-                        {item.name} ×{" "}
-                        {item.qty}
+                        {item.name} × {item.qty}
                       </span>
 
                       <span>
@@ -179,6 +196,17 @@ const Success = () => {
               Back to Homepage
             </button>
 
+          </div>
+        )}
+
+        {!loading && !orderData && (
+          <div className="p-6">
+            <button
+              onClick={() => navigate("/")}
+              className="w-full bg-black text-white py-3 rounded-2xl"
+            >
+              Back to Homepage
+            </button>
           </div>
         )}
 
