@@ -19,7 +19,9 @@ const productSchema = new mongoose.Schema({
       "Gaming Accessories",
       "Computer Accessories",
       "Perfumes",
-      "Headset and Earpiece"
+      "Headset and Earpiece",
+      "Wifi and Routers",
+      "Other Electronics"
     ],
     required: true
   },

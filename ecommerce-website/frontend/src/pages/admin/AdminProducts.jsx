@@ -17,6 +17,8 @@ const CATEGORIES = [
   "Computer Accessories",
   "Perfumes",
   "Headset and Earpiece",
+  "Wifi and Routers",
+  "Other Electronics"
 ];
 
 const AdminProducts = () => {
@@ -229,113 +231,113 @@ const AdminProducts = () => {
       {/* TABLE */}
       <div className="bg-white border rounded-2xl overflow-x-auto">
 
-  <table className="min-w-[700px] w-full text-sm">
+        <table className="min-w-[700px] w-full text-sm">
 
-    <thead className="bg-gray-50">
+          <thead className="bg-gray-50">
 
-      <tr>
-        <th className="p-4 text-left">
-          Product
-        </th>
+            <tr>
+              <th className="p-4 text-left">
+                Product
+              </th>
 
-        <th className="p-4">
-          Category
-        </th>
+              <th className="p-4">
+                Category
+              </th>
 
-        <th className="p-4">
-          Price
-        </th>
+              <th className="p-4">
+                Price
+              </th>
 
-        <th className="p-4">
-          Actions
-        </th>
-      </tr>
+              <th className="p-4">
+                Actions
+              </th>
+            </tr>
 
-    </thead>
+          </thead>
 
-    <tbody>
+          <tbody>
 
-      {products.map((p) => (
+            {products.map((p) => (
 
-        <tr
-          key={p._id}
-          className="border-t"
-        >
-
-          {/* PRODUCT */}
-
-          <td className="p-4">
-
-            <div className="flex gap-3 min-w-[250px]">
-
-              {p.image && (
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  className="w-14 h-14 rounded object-cover shrink-0"
-                />
-              )}
-
-              <div className="min-w-0">
-
-                <p className="font-medium break-words">
-                  {p.name}
-                </p>
-
-                <p className="text-xs text-gray-500 break-words">
-                  {p.description}
-                </p>
-
-              </div>
-            </div>
-          </td>
-
-          {/* CATEGORY */}
-
-          <td className="p-4 whitespace-nowrap">
-            {p.category}
-          </td>
-
-          {/* PRICE */}
-
-          <td className="p-4 whitespace-nowrap">
-            GHS {p.price}
-          </td>
-
-          {/* ACTIONS */}
-
-          <td className="p-4">
-
-            <div className="flex flex-col gap-2 min-w-[120px]">
-
-              <button
-                onClick={() =>
-                  startEdit(p)
-                }
-                className="px-3 py-2 bg-gray-100 rounded"
+              <tr
+                key={p._id}
+                className="border-t"
               >
-                Edit
-              </button>
 
-              <button
-                onClick={() =>
-                  handleDelete(
-                    p._id
-                  )
-                }
-                className="px-3 py-2 bg-red-500 text-white rounded"
-              >
-                Delete
-              </button>
+                {/* PRODUCT */}
 
-            </div>
-          </td>
-        </tr>
-      ))}
+                <td className="p-4">
 
-    </tbody>
-  </table>
-</div>
+                  <div className="flex gap-3 min-w-[250px]">
+
+                    {p.image && (
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        className="w-14 h-14 rounded object-cover shrink-0"
+                      />
+                    )}
+
+                    <div className="min-w-0">
+
+                      <p className="font-medium break-words">
+                        {p.name}
+                      </p>
+
+                      <p className="text-xs text-gray-500 break-words">
+                        {p.description}
+                      </p>
+
+                    </div>
+                  </div>
+                </td>
+
+                {/* CATEGORY */}
+
+                <td className="p-4 whitespace-nowrap">
+                  {p.category}
+                </td>
+
+                {/* PRICE */}
+
+                <td className="p-4 whitespace-nowrap">
+                  GHS {p.price}
+                </td>
+
+                {/* ACTIONS */}
+
+                <td className="p-4">
+
+                  <div className="flex flex-col gap-2 min-w-[120px]">
+
+                    <button
+                      onClick={() =>
+                        startEdit(p)
+                      }
+                      className="px-3 py-2 bg-gray-100 rounded"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleDelete(
+                          p._id
+                        )
+                      }
+                      className="px-3 py-2 bg-red-500 text-white rounded"
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+                </td>
+              </tr>
+            ))}
+
+          </tbody>
+        </table>
+      </div>
 
       {/* EDIT MODAL */}
       {editingId && (

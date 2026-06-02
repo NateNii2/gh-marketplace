@@ -7,7 +7,9 @@ const CATEGORIES = [
   "Gaming Accessories",
   "Computer Accessories",
   "Perfumes",
-  "Headset and Earpiece"
+  "Headset and Earpiece",
+  "Wifi and Routers",
+  "Other Electronics"
 ];
 
 const ProductsFilters = ({
