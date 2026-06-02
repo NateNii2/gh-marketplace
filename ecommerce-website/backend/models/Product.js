@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema({
     enum: [
       "New Iphones",
       "Used Iphones",
-      "New android Phones",
+      "New Android Phones",
       "Laptops",
       "Mobile Accessories",
       "Gaming Accessories",
