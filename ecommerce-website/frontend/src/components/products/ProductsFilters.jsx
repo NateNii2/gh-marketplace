@@ -1,7 +1,7 @@
 const CATEGORIES = [
   "New Iphones",
   "Used Iphones",
-  "New android Phones",
+  "New Android Phones",
   "Laptops",
   "Mobile Accessories",
   "Gaming Accessories",
