@@ -73,7 +73,8 @@ app.use(limiter);
 
 const allowedOrigins = [
   "http://localhost:5173",
-  process.env.FRONTEND_URL,
+  "https://ghmarketplace.store",
+  "https://www.ghmarketplace.store",
 ];
 
 app.use(
