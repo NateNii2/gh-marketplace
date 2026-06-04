@@ -26,25 +26,34 @@ exports.createOrder = async (req, res) => {
     const validatedItems = [];
 
     for (const item of orderItems) {
-
-      const product =
-        await Product.findById(item.product);
+      const product = await Product.findById(item.product);
 
       if (!product) {
-        return res.status(404).json({
-          message: "Product not found",
-        });
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      let finalPrice = product.price;
+
+      // ✅ VARIANT PRICE LOGIC
+      if (item.variant) {
+        const match = product.variants?.find(
+          (v) => v.label === item.variant
+        );
+
+        if (match) {
+          finalPrice = match.price;
+        }
       }
 
       validatedItems.push({
         product: product._id,
         name: product.name,
         qty: item.qty,
-        price: product.price,
+        price: finalPrice,
+        variant: item.variant || null,
       });
 
-      totalPrice +=
-        product.price * item.qty;
+      totalPrice += finalPrice * item.qty;
     }
 
     const isPickup =
@@ -91,19 +100,19 @@ exports.createOrder = async (req, res) => {
       paymentResult:
         isPickup
           ? {
-              reference:
-                "PICKUP_ORDER",
+            reference:
+              "PICKUP_ORDER",
 
-              status: "pickup",
-            }
+            status: "pickup",
+          }
           : isCOD
-          ? {
+            ? {
               reference:
                 "COD_ORDER",
 
               status: "cod",
             }
-          : {},
+            : {},
     });
 
     res.status(201).json(order);
@@ -304,7 +313,7 @@ exports.initPaystackPayment =
       console.error(
         "PAYSTACK INIT ERROR:",
         err.response?.data ||
-          err.message
+        err.message
       );
 
       res.status(500).json({

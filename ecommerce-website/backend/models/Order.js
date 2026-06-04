@@ -9,19 +9,18 @@ const orderSchema = mongoose.Schema(
     },
 
     orderItems: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
-
-        name: String,
-        qty: Number,
-        price: Number,
-      },
-    ],
-
+  {
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
+    },
+    name: String,
+    qty: Number,
+    price: Number,
+    variant: String, // ✅ ADD THIS
+  },
+],
     deliveryMethod: {
       type: String,
       enum: ["pickup", "delivery"],

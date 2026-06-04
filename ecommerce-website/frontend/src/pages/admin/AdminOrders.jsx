@@ -116,11 +116,10 @@ const AdminOrders = () => {
 
       {message && (
         <div
-          className={`p-3 rounded-lg text-sm ${
-            message.type === "error"
+          className={`p-3 rounded-lg text-sm ${message.type === "error"
               ? "bg-red-100 text-red-700"
               : "bg-green-100 text-green-700"
-          }`}
+            }`}
         >
           {message.text}
         </div>
@@ -168,11 +167,10 @@ const AdminOrders = () => {
             <div className="flex flex-wrap gap-2">
 
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  o.isPaid
+                className={`px-3 py-1 rounded-full text-xs font-medium ${o.isPaid
                     ? "bg-green-100 text-green-700"
                     : "bg-red-100 text-red-600"
-                }`}
+                  }`}
               >
                 {o.isPaid
                   ? "Paid"
@@ -180,11 +178,10 @@ const AdminOrders = () => {
               </span>
 
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  o.isDelivered
+                className={`px-3 py-1 rounded-full text-xs font-medium ${o.isDelivered
                     ? "bg-green-100 text-green-700"
                     : "bg-yellow-100 text-yellow-700"
-                }`}
+                  }`}
               >
                 {o.isDelivered
                   ? "Delivered"
@@ -192,11 +189,10 @@ const AdminOrders = () => {
               </span>
 
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  o.deliveryMethod === "pickup"
+                className={`px-3 py-1 rounded-full text-xs font-medium ${o.deliveryMethod === "pickup"
                     ? "bg-blue-100 text-blue-700"
                     : "bg-purple-100 text-purple-700"
-                }`}
+                  }`}
               >
                 {o.deliveryMethod}
               </span>
@@ -255,9 +251,7 @@ const AdminOrders = () => {
               <p className="text-sm">
                 <strong>Name:</strong>{" "}
                 {
-                  selected
-                    .shippingAddress
-                    ?.fullName
+                  selected.shippingAddress?.exactLocation
                 }
               </p>
 
@@ -293,13 +287,13 @@ const AdminOrders = () => {
               </p>
 
               <p className="text-sm">
-  <strong>Location:</strong>{" "}
-  {
-    selected
-      .shippingAddress
-      ?.location
-  }
-</p>
+                <strong>Location:</strong>{" "}
+                {
+                  selected
+                    .shippingAddress
+                    ?.location
+                }
+              </p>
             </div>
 
             {/* PAYMENT */}
