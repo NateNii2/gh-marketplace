@@ -251,7 +251,7 @@ const AdminOrders = () => {
               <p className="text-sm">
                 <strong>Name:</strong>{" "}
                 {
-                  selected.shippingAddress?.exactLocation
+                  selected .shippingAddress?.fullName
                 }
               </p>
 
@@ -289,9 +289,7 @@ const AdminOrders = () => {
               <p className="text-sm">
                 <strong>Location:</strong>{" "}
                 {
-                  selected
-                    .shippingAddress
-                    ?.location
+                   selected.shippingAddress?.exactLocation
                 }
               </p>
             </div>
