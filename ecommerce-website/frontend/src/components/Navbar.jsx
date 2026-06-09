@@ -87,7 +87,7 @@ const Navbar = () => {
           <img
             src={logo}
             alt="GH Marketplace"
-            className="h-15 sm:h-15 md:h-16 w-20 object-contain"
+            className="h-20 sm:h-18 md:h-19 w-24 object-contain"
           />
         </Link>
 
