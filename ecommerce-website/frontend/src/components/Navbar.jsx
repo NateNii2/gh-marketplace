@@ -57,6 +57,10 @@ const Navbar = () => {
     setMobileSearch,
   ] = useState("");
 
+  /* =========================
+     SEARCH
+  ========================= */
+
   const handleSearch = (
     query
   ) => {
@@ -87,7 +91,7 @@ const Navbar = () => {
           <img
             src={logo}
             alt="GH Marketplace"
-            className="h-20 sm:h-18 md:h-19 w-24 object-contain"
+            className="h-20 sm:h-18 md:h-24 object-contain"
           />
         </Link>
 
@@ -130,21 +134,31 @@ const Navbar = () => {
         </div>
 
         {/* DESKTOP RIGHT */}
+
         <div className="hidden md:flex items-center gap-5">
 
-          <Link to="/products" className="text-sm font-medium">
+          <Link
+            to="/products"
+            className="text-sm font-medium"
+          >
             Shop
           </Link>
+
+          {/* CART */}
 
           <Link
             to="/cart"
             className={`relative transition duration-300 ${
-              cartPulse ? "scale-125" : "scale-100"
+              cartPulse
+                ? "scale-125"
+                : "scale-100"
             }`}
           >
+
             <ShoppingCart size={22} />
 
-            {cartItems.length > 0 && (
+            {cartItems.length >
+              0 && (
               <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
                 {cartItems.length}
               </span>
@@ -167,7 +181,10 @@ const Navbar = () => {
           )}
 
           {user ? (
-            <button onClick={logout} className="text-sm">
+            <button
+              onClick={logout}
+              className="text-sm"
+            >
               Logout
             </button>
           ) : (
@@ -178,47 +195,204 @@ const Navbar = () => {
         </div>
 
         {/* MOBILE BUTTON */}
+
         <button
           className="md:hidden"
-          onClick={() => setOpen(true)}
+          onClick={() =>
+            setOpen(true)
+          }
         >
           <Menu size={26} />
         </button>
       </div>
 
-      {/* MOBILE MENU (UNCHANGED) */}
+      {/* MOBILE MENU */}
+
       {open && (
         <div className="fixed inset-0 z-50">
+
+          {/* BACKDROP */}
+
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
+            onClick={() =>
+              setOpen(false)
+            }
           />
+
+          {/* DRAWER */}
 
           <div className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-xl p-5 flex flex-col gap-6 animate-slideIn">
 
+            {/* HEADER */}
+
             <div className="flex justify-between items-center">
-              <h2 className="font-semibold text-lg">Menu</h2>
-              <button onClick={() => setOpen(false)}>
+
+              <h2 className="font-semibold text-lg">
+                Menu
+              </h2>
+
+              <button
+                onClick={() =>
+                  setOpen(false)
+                }
+              >
                 <X size={24} />
               </button>
+
             </div>
 
+            {/* SEARCH */}
+
             <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2">
-              <Search size={18} className="text-gray-500" />
+
+              <Search
+                size={18}
+                className="text-gray-500"
+              />
+
               <input
                 value={mobileSearch}
-                onChange={(e) => setMobileSearch(e.target.value)}
+                onChange={(e) =>
+                  setMobileSearch(
+                    e.target.value
+                  )
+                }
                 onKeyDown={(e) =>
-                  e.key === "Enter" && handleSearch(mobileSearch)
+                  e.key ===
+                    "Enter" &&
+                  handleSearch(
+                    mobileSearch
+                  )
                 }
                 placeholder="Search products..."
                 className="bg-transparent outline-none px-2 w-full text-sm"
               />
             </div>
 
+            {/* LINKS */}
+
+            <div className="flex flex-col gap-4 text-sm">
+
+              <Link
+                to="/"
+                onClick={() =>
+                  setOpen(false)
+                }
+                className="flex items-center gap-3"
+              >
+                <Home size={18} />
+                Home
+              </Link>
+
+              <Link
+                to="/products"
+                onClick={() =>
+                  setOpen(false)
+                }
+                className="flex items-center gap-3"
+              >
+                <LayoutGrid size={18} />
+                Shop
+              </Link>
+
+              {/* MOBILE CART */}
+
+              <Link
+                to="/cart"
+                onClick={() =>
+                  setOpen(false)
+                }
+                className={`flex items-center gap-3 transition duration-300 ${
+                  cartPulse
+                    ? "translate-x-2 text-green-600"
+                    : ""
+                }`}
+              >
+
+                <ShoppingCart size={18} />
+
+                Cart (
+                {
+                  cartItems.length
+                }
+                )
+
+              </Link>
+
+              {user && (
+                <Link
+                  to="/account"
+                  onClick={() =>
+                    setOpen(false)
+                  }
+                  className="flex items-center gap-3"
+                >
+                  <User size={18} />
+                  Account
+                </Link>
+              )}
+
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() =>
+                    setOpen(false)
+                  }
+                  className="flex items-center gap-3"
+                >
+                  <LayoutGrid size={18} />
+                  Admin
+                </Link>
+              )}
+
+              {user ? (
+                <button
+                  onClick={() => {
+                    logout();
+                    setOpen(false);
+                  }}
+                  className="flex items-center gap-3 text-red-600"
+                >
+                  <LogOut size={18} />
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() =>
+                    setOpen(false)
+                  }
+                  className="flex items-center gap-3"
+                >
+                  <User size={18} />
+                  Login
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       )}
+
+      {/* ANIMATION */}
+
+      <style>
+        {`
+          .animate-slideIn {
+            animation: slideIn 0.25s ease-out;
+          }
+
+          @keyframes slideIn {
+            from {
+              transform: translateX(100%);
+            }
+
+            to {
+              transform: translateX(0);
+            }
+          }
+        `}
+      </style>
     </nav>
   );
 };
