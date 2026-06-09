@@ -11,7 +11,9 @@ import RecommendedSection from "../components/products/RecommendedSection";
 
 const Products = () => {
   const [searchParams] = useSearchParams();
+
   const urlCategory = searchParams.get("category");
+  const urlSearch = searchParams.get("search"); // ✅ FIX ADDED
 
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
@@ -22,6 +24,13 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
 
   const [showFilters, setShowFilters] = useState(false);
+
+  /* ✅ FIX: sync URL search into state */
+  useEffect(() => {
+    if (urlSearch) {
+      setSearch(urlSearch);
+    }
+  }, [urlSearch]);
 
   const loadProducts = async () => {
     setLoading(true);
@@ -57,7 +66,6 @@ const Products = () => {
       >
         <div className="grid md:grid-cols-2 items-center">
 
-          {/* TEXT */}
           <div className="p-6 md:p-10 space-y-4 z-10">
             <h1 className="text-2xl md:text-4xl font-bold leading-tight">
               Explore Our Premium Tech & Lifestyle Collection
@@ -78,7 +86,6 @@ const Products = () => {
             </button>
           </div>
 
-          {/* IMAGE */}
           <div className="relative h-[220px] md:h-[320px]">
             <img
               src="https://i.pinimg.com/736x/d5/55/50/d55550d1d6e24af6b56d49769659d7ff.jpg"
@@ -86,6 +93,7 @@ const Products = () => {
               className="w-full h-full object-cover opacity-80"
             />
           </div>
+
         </div>
       </motion.div>
 
@@ -127,15 +135,16 @@ const Products = () => {
         {/* PRODUCTS */}
         <div className="flex-1">
           {loading ? (
-  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
-    {[...Array(8)].map((_, i) => (
-      <SkeletonCard key={i} />
-    ))}
-  </div>
-) : (
-  <ProductsGrid products={products} loading={loading} />
-)}
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
+              {[...Array(8)].map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          ) : (
+            <ProductsGrid products={products} loading={loading} />
+          )}
         </div>
+
       </div>
 
       {/* MOBILE FILTER DRAWER */}
@@ -161,6 +170,7 @@ const Products = () => {
               setMaxPrice={setMaxPrice}
               onApply={() => setShowFilters(false)}
             />
+
           </div>
         </div>
       )}
