@@ -25,7 +25,7 @@ const TrendingProducts = ({ products, loading }) => {
 
   <div className="flex justify-between items-center">
     <h2 className="text-xl md:text-2xl font-semibold">
-      Featured Products
+      Trending Products
     </h2>
 
     <div className="hidden md:flex gap-2">
