@@ -13,10 +13,10 @@ const Products = () => {
   const [searchParams] = useSearchParams();
 
   const urlCategory = searchParams.get("category");
-  const urlSearch = searchParams.get("search"); // ✅ FIX ADDED
+  const urlSearch = searchParams.get("search"); // ✅ ADD THIS
 
   const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(urlSearch || ""); // ✅ INIT FROM URL
   const [category, setCategory] = useState(urlCategory || "");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -24,13 +24,6 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
 
   const [showFilters, setShowFilters] = useState(false);
-
-  /* ✅ FIX: sync URL search into state */
-  useEffect(() => {
-    if (urlSearch) {
-      setSearch(urlSearch);
-    }
-  }, [urlSearch]);
 
   const loadProducts = async () => {
     setLoading(true);
@@ -42,6 +35,7 @@ const Products = () => {
         maxPrice: maxPrice || undefined,
         sort: sort || undefined,
       });
+
       setProducts(data);
     } catch (err) {
       console.error(err);
@@ -50,6 +44,11 @@ const Products = () => {
     }
   };
 
+  // ✅ FIX: sync URL search → state when page opens or URL changes
+  useEffect(() => {
+    setSearch(urlSearch || "");
+  }, [urlSearch]);
+
   useEffect(() => {
     loadProducts();
   }, [search, category, minPrice, maxPrice, sort]);
@@ -57,7 +56,7 @@ const Products = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 pt-6 md:pt-10 space-y-6 md:space-y-10 overflow-x-hidden">
 
-      {/* ================= HERO BANNER ================= */}
+      {/* HERO */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -93,21 +92,18 @@ const Products = () => {
               className="w-full h-full object-cover opacity-80"
             />
           </div>
-
         </div>
       </motion.div>
 
-      {/* ================= HEADER ================= */}
+      {/* HEADER */}
       <div className="flex justify-between items-center">
-        <h2 className="text-xl md:text-3xl font-semibold">
-          All Products
-        </h2>
+        <h2 className="text-xl md:text-3xl font-semibold">All Products</h2>
         <p className="text-gray-500 text-sm md:text-base">
           {products.length} products
         </p>
       </div>
 
-      {/* MOBILE FILTER BUTTON */}
+      {/* FILTER BUTTON */}
       <button
         onClick={() => setShowFilters(true)}
         className="lg:hidden flex items-center gap-2 px-4 py-2 border rounded-lg"
@@ -118,7 +114,6 @@ const Products = () => {
 
       <div className="flex gap-8">
 
-        {/* DESKTOP FILTER */}
         <aside className="w-[260px] hidden lg:block">
           <ProductsFilters
             search={search}
@@ -132,7 +127,6 @@ const Products = () => {
           />
         </aside>
 
-        {/* PRODUCTS */}
         <div className="flex-1">
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -144,10 +138,8 @@ const Products = () => {
             <ProductsGrid products={products} loading={loading} />
           )}
         </div>
-
       </div>
 
-      {/* MOBILE FILTER DRAWER */}
       {showFilters && (
         <div className="fixed inset-0 z-50 bg-black/40 flex justify-end">
           <div className="w-[85%] max-w-sm bg-white h-full p-5 overflow-y-auto flex flex-col">
@@ -170,13 +162,11 @@ const Products = () => {
               setMaxPrice={setMaxPrice}
               onApply={() => setShowFilters(false)}
             />
-
           </div>
         </div>
       )}
 
       <RecommendedSection products={products} />
-
     </div>
   );
 };
