@@ -25,7 +25,7 @@ const CategoryHighlights = ({ products }) => {
               p-4 md:p-6 text-center font-medium text-sm md:text-base
               bg-gray-100 md:bg-white border border-gray-200
               transition-all duration-300
-              hover:bg-black hover:text-white hover:scale-105
+              hover:bg-lightyellow hover:text-white hover:scale-105
               active:scale-95
             "
           >
