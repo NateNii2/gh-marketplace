@@ -16,11 +16,12 @@ const productSchema = new mongoose.Schema({
       "New Android Phones",
       "Laptops",
       "Mobile Accessories",
-      "Gaming Accessories",
+      "Gaming and Accessories",
       "Computer Accessories",
       "Perfumes",
       "Headset and Earpiece",
       "Wifi and Routers",
+      "Tablets and iPads",
       "Other Electronics"
     ],
     required: true
